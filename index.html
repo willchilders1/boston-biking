@@ -5,9 +5,11 @@
       rel="stylesheet"
       href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
     />
+    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/litera/bootstrap.min.css" rel="stylesheet">
+    <link href='css/styles.css' rel='stylesheet' />
     <meta charset="utf-8" />
 
-    <title>HTML5 Template</title>
+    <title>Biking and Walking in Boston</title>
     <style>
       #map {
         position: absolute;
@@ -18,11 +20,21 @@
         padding: 0;
         background: rgba(0, 0, 0, 0.85);
       }
+
+
     </style>
   </head>
 
   <body>
-    <div id="map"></div>
+
+    <div id="map"></div> 
+    <div class="container-fluid">
+      <header class="row py-3 bg-dark text-white">
+        <div class="col mx-2">
+          <h1 class="h1">Biking and Walking in Boston</h1>
+        </div>
+      </header>
+    </div>
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
     <script
       src="https://code.jquery.com/jquery-3.2.1.min.js"
@@ -31,14 +43,14 @@
     ></script>
     <script>
       const options = {
-        center: [33.726, -84.365],
-        zoom: 9,
+        center: [42.3601, -71.0589],
+        zoom: 11,
         minZoom: 9,
         maxZoom: 16,
-        maxBounds: [
-          [33.911, -84.032],
-          [33.62, -84.772],
-        ],
+        // maxBounds: [
+        //   [33.911, -84.032],
+        //   [33.62, -84.772],
+        // ],
       };
 
       const map = L.map("map", options);
@@ -48,10 +60,11 @@
       map.getPane("labels").style.pointerEvents = "none";
 
       L.tileLayer(
-        "http://global.ssl.fastly.net/rastertiles/dark_only_labels/{z}/{x}/{y}.png",
+        "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png",
         {
-          attribution: "©OpenStreetMap, ©CartoDB",
-          pane: "labels",
+          maxZoom: 20,
+          attribution:
+            '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
         }
       ).addTo(map);
 
@@ -91,13 +104,14 @@
 
       $.when(
         $.getJSON("data/boston-urban.json"),
-        $.getJSON("data/boston-neighborhoods-filtered.json"),
-        $.getJSON("data/bike-routes-edited2.geojson")
-      ).done(function (urbanAreasData, neighborhoodsData, bikeRoutesData) {
-        drawMap(urbanAreasData, neighborhoodsData, bikeRoutesData);
+        $.getJSON("data/boston-neighborhoods.geojson"),
+        $.getJSON("data/bike-routes-edited3.json"),
+        $.getJSON("data/walking-trails.json")
+      ).done(function (urbanAreasData, neighborhoodsData, bikeRoutesData, walkingTrailsData) {
+        drawMap(urbanAreasData, neighborhoodsData, bikeRoutesData, walkingTrailsData);
       });
 
-      function drawMap(urbanAreasData, neighborhoodsData, bikeRoutesData) {
+      function drawMap(urbanAreasData, neighborhoodsData, bikeRoutesData, walkingTrailsData) {
         L.geoJson(urbanAreasData, {
           style: urbanOptions,
         }).addTo(map);
@@ -125,33 +139,29 @@
         }).addTo(map);
         L.geoJson(bikeRoutesData, {
           // style each feature
-          style: function (feature) {
-            // shortcut to variable
-            let type = feature.properties.rte_type;
+          color: "#f0f062",
+        weight: .5,
+        opacity: 1,
 
-            // assign options
-            return type === "subway, metro"
-              ? subwayOptions
-              : type === "bus"
-              ? busOptions
-              : type === "tram, light rail, streetcar"
-              ? tramOptions
-              : otherRoutes;
-          },
+        }).addTo(map);
+        L.geoJson(walkingTrailsData, {
+          // style each feature
+        color: "#ff6e00",
+        opacity: 1,
+        weight: .2,
         }).addTo(map);
       }
-      map.createPane('labels');
-map.getPane('labels').style.zIndex = 650;
-map.getPane('labels').style.pointerEvents = 'none';
+      map.createPane("labels");
+      map.getPane("labels").style.zIndex = 650;
+      map.getPane("labels").style.pointerEvents = "none";
 
-L.tileLayer(
-  'http://global.ssl.fastly.net/rastertiles/dark_only_labels/{z}/{x}/{y}.png',
-  {
-    attribution: '©OpenStreetMap, ©CartoDB',
-    pane: 'labels',
-  }
-).addTo(map);
-   
+      L.tileLayer(
+        "http://global.ssl.fastly.net/rastertiles/dark_only_labels/{z}/{x}/{y}.png",
+        {
+          attribution: "©OpenStreetMap, ©CartoDB",
+          pane: "labels",
+        }
+      ).addTo(map);
     </script>
   </body>
 </html>
