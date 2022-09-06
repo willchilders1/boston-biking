@@ -1,0 +1,61 @@
+#map {
+  width: 100%;
+  height: calc(40vh);
+}
+
+#about {
+  max-height: calc(80vh);
+  overflow-y: scroll;
+}
+
+.legend circle {
+  fill: none;
+  stroke: #ccc;
+}
+
+.legend text {
+  fill: #777;
+  font: 10px sans-serif;
+  text-anchor: middle;
+}
+
+#ui {
+  position: absolute;
+  right: 1em;
+  top: 1em;
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+  #map {
+    height: calc(60vh);
+  }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+
+  #map {
+    height: calc(80vh);
+  }
+}
+
+.state {
+  fill: #61aab6;
+  stroke: whitesmoke;
+  stroke-width: .7;
+}
+
+.facility {
+  fill: #cf5635;
+  stroke: white;
+  stroke-width: .3;
+  opacity: 1;
+}
+
+.facility:hover {
+  stroke-width: 2;
+}
